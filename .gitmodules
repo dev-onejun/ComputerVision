@@ -1,0 +1,4 @@
+[submodule "challenges/recaptcha-dataset"]
+	path = challenges/recaptcha-dataset
+	url = git@github.com:folfcoder/recaptcha-dataset.git
+	ignore = untracked
