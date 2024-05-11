@@ -53,8 +53,11 @@ def train(train_loader, validate_loader, processor, model, n_epochs, lr):
             )
 
         writer.add_scalar("loss/train", train_loss, epoch)
+        writer.add_scalar("accuracy/train", train_accuracy, epoch)
         writer.add_scalar("loss/validate", validate_loss, epoch)
-        writer.flush()
+        writer.add_scalar("accuracy/validate", validate_accuracy, epoch)
+
+    writer.flush()
 
     torch.save(
         model.state_dict(),
