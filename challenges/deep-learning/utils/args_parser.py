@@ -30,12 +30,6 @@ def get_train_parsed_arguments():
         help="Pretraining model that you want to get",
     )
     parser.add_argument(
-        "--num-classes",
-        default=10,
-        type=int,
-        help="The number of classes for the dataset",
-    )
-    parser.add_argument(
         "--dataset-path",
         type=str,
         default="./datasets/recaptcha-dataset",
@@ -46,7 +40,7 @@ def get_train_parsed_arguments():
         "-b",
         type=int,
         default=32,
-        help="input batch size (default: )",
+        help="input batch size (default: 32)",
     )
     parser.add_argument(
         "--number-workers",
@@ -60,7 +54,7 @@ def get_train_parsed_arguments():
         "-e",
         type=int,
         default=10,
-        help="The number of epochs to train",
+        help="The number of epochs to train (default: 10)",
     )
     parser.add_argument(
         "--learning-rate",
