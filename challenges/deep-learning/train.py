@@ -16,9 +16,12 @@ from torch.utils.tensorboard.writer import SummaryWriter
 
 
 def train(train_loader, validate_loader, processor, model, n_epochs, lr):
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    """
     optimizer = torch.optim.Adam(
         filter(lambda p: p.requires_grad, model.parameters()), lr=lr
     )
+    """
     loss_fn = nn.CrossEntropyLoss()
     # scheduler
 
