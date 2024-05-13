@@ -9,14 +9,15 @@ from transformers import ViTImageProcessor
 from torch import nn
 from models import ViTClassifier
 
-from datasets import RecaptchaDataset
+# from datasets import RecaptchaDataset as Dataset
+from datasets import Cifar10 as Dataset
 from utils.train_helpers import fit, evaluate
 
 from torch.utils.tensorboard.writer import SummaryWriter
 
 
 def train(train_loader, validate_loader, processor, model, n_epochs, lr):
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     """
     optimizer = torch.optim.Adam(
         filter(lambda p: p.requires_grad, model.parameters()), lr=lr
@@ -82,8 +83,10 @@ def main():
         model = nn.DataParallel(model)
 
     if args.train:
-        train_dataset = RecaptchaDataset(args.dataset_path, "train")
-        validate_dataset = RecaptchaDataset(args.dataset_path, "validate")
+        # train_dataset = RecaptchaDataset(args.dataset_path, "train")
+        # validate_dataset = RecaptchaDataset(args.dataset_path, "validate")
+        train_dataset = Dataset("./datasets/cifar10-dataset", "train")
+        validate_dataset = Dataset("./datasets/cifar10-dataset", "validate")
 
         train_loader = data.DataLoader(
             train_dataset,
