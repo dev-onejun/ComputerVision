@@ -48,7 +48,9 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
         if epoch % 10 == 0:
             torch.save(
                 model.state_dict(),
-                os.path.join(saved_model_dir, "epoch_{}.pt".format(epoch)),
+                os.path.join(
+                    saved_model_dir, "epoch_{}_{}.pt".format(epoch, datetime.now())
+                ),
             )
 
     writer.flush()
