@@ -9,6 +9,7 @@ class ViTClassifier(ViTPreTrainedModel):
 
         self.vit = ViTModel(config)
 
+        self.batch_norm = nn.BatchNorm2d(1024)
         self.classifier = nn.Sequential(
             nn.Linear(1024, 1024),
             nn.ReLU(),
@@ -25,6 +26,7 @@ class ViTClassifier(ViTPreTrainedModel):
         vit_outputs = self.vit(pixel_values=pixel_values)
         vit_output = vit_outputs.pooler_output
 
+        vit_output = self.batch_norm(vit_output)
         logits = self.classifier(vit_output)
 
         return logits
