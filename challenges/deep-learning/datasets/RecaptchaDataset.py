@@ -69,35 +69,57 @@ class RecaptchaDataset(Dataset):
             "train",
             "validate",
             "test",
+            "all",
         ), "The `train_type` variable must be gotten train, validate, or test"
 
         self.train_type = train_type
 
     def __len__(self):
-        size = 0
-        if self.train_type == "train":
-            size = len(self.train_image_paths)
-        elif self.train_type == "validate":
-            size = len(self.validate_image_paths)
-        elif self.train_type == "test":
-            size = len(self.test_image_paths)
+        size = (
+            len(self.train_image_paths)
+            if self.train_type == "train"
+            else (
+                len(self.validate_image_paths)
+                if self.train_type == "validate"
+                else (
+                    len(self.test_image_paths)
+                    if self.train_type == "test"
+                    else len(self.train_image_paths)
+                    + len(self.validate_image_paths)
+                    + len(self.test_image_paths)
+                )
+            )
+        )
 
         return size
 
     def __getitem__(self, idx):
-        if self.train_type == "train":
-            image = Image.open(self.train_image_paths[idx])
-            label = self.train_image_paths[idx].split("/")[-2]
-        elif self.train_type == "validate":
-            image = Image.open(self.validate_image_paths[idx])
-            label = self.validate_image_paths[idx].split("/")[-2]
-        elif self.train_type == "test":
-            image = Image.open(self.test_image_paths[idx])
-            label = self.test_image_paths[idx].split("/")[-2]
+        image_paths = (
+            self.train_image_paths
+            if self.train_type == "train"
+            else (
+                self.validate_image_paths
+                if self.train_type == "validate"
+                else (
+                    self.test_image_paths
+                    if self.train_type == "test"
+                    else self.train_image_paths
+                    + self.validate_image_paths
+                    + self.test_image_paths
+                )
+            )
+        )
 
+        image = Image.open(image_paths[idx])
         image = image.convert("RGB")
         image = self.transform(image)
 
+        label = image_paths[idx].split("/")[-2]
         label = self.label_to_idx[label]
 
         return image, label
+
+
+if __name__ == "__main__":
+    dataset = RecaptchaDataset("./recaptcha-dataset", "all")
+    print(len(dataset))
