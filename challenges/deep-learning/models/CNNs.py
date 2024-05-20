@@ -11,11 +11,7 @@ class ResNet(nn.Module):
     def __init__(self):
         super(ResNet, self).__init__()
 
-        self.weights = ResNet152_Weights.IMAGENET1K_V2
-
-        self.transform = self.weights.transforms()
-
-        self.model = resnet152(weights=self.weights)
+        self.model = resnet152(weights=ResNet152_Weights.IMAGENET1K_V2)
         self.model.fc = nn.Sequential(
             nn.Linear(2048, 2048),
             nn.ReLU(),
@@ -30,11 +26,7 @@ class EfficientNet(nn.Module):
     def __init__(self):
         super(EfficientNet, self).__init__()
 
-        self.weights = EfficientNet_V2_L_Weights.IMAGENET1K_V1
-
-        self.transform = self.weights.transforms()
-
-        self.model = efficientnet_v2_l(weights=self.weights)
+        self.model = efficientnet_v2_l(weights=EfficientNet_V2_L_Weights.IMAGENET1K_V1)
         self.model.classifier[1] = nn.Linear(1280, 10)
 
     def forward(self, x):

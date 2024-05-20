@@ -2,6 +2,7 @@ import os
 from utils.args_parser import get_train_parsed_arguments
 
 from models import EfficientNet, ResNet
+from models import EfficientNet_V2_L_Weights, ResNet152_Weights
 
 from datasets import RecaptchaDataset as Dataset
 from torch.utils import data
@@ -14,6 +15,8 @@ from datetime import datetime
 
 
 def train(train_loader, validate_loader, model, n_epochs, lr):
+    writer = SummaryWriter()
+
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_fn = torch.nn.CrossEntropyLoss()
 
@@ -37,10 +40,10 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
             f"Epoch {epoch}\t|\tTrain Loss {train_loss:.4f}\tTrain Accuracy {train_accuracy:.4f}\tValidate Loss {validate_loss:.4f}\tValidate Accuracy {validate_accuracy:.4f}"
         )
 
-        args.writer.add_scalar("loss/train", train_loss, epoch)
-        args.writer.add_scalar("accuracy/train", train_accuracy, epoch)
-        args.writer.add_scalar("loss/validate", validate_loss, epoch)
-        args.writer.add_scalar("accuracy/validate", validate_accuracy, epoch)
+        writer.add_scalar("loss/train", train_loss, epoch)
+        writer.add_scalar("accuracy/train", train_accuracy, epoch)
+        writer.add_scalar("loss/validate", validate_loss, epoch)
+        writer.add_scalar("accuracy/validate", validate_accuracy, epoch)
 
         if epoch % 10 == 0:
             torch.save(
@@ -48,7 +51,7 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
                 os.path.join(saved_model_dir, "epoch_{}.pt".format(epoch)),
             )
 
-    args.writer.flush()
+    writer.flush()
 
     torch.save(
         model.state_dict(),
@@ -57,11 +60,18 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
 
 
 def main():
-    model = EfficientNet() if args.model == "efficientnet" else ResNet()
+    model, transform = (
+        (EfficientNet(), EfficientNet_V2_L_Weights.IMAGENET1K_V1.transforms())
+        if args.model_type == "efficientnet"
+        else (ResNet(), ResNet152_Weights.IMAGENET1K_V2.transforms())
+    )
     model.to(device)
 
-    train_dataset = Dataset(args.dataset_path, "train", transform=model.transform)
-    validate_dataset = Dataset(args.dataset_path, "validate", transform=model.transform)
+    if torch.cuda.device_count() > 1:
+        model = torch.nn.DataParallel(model)
+
+    train_dataset = Dataset(args.dataset_path, "train", transform=transform)
+    validate_dataset = Dataset(args.dataset_path, "validate", transform=transform)
 
     train_loader = data.DataLoader(
         train_dataset,
@@ -102,8 +112,5 @@ if __name__ == "__main__":
     import warnings
 
     warnings.filterwarnings("ignore")
-
-    writer = SummaryWriter()
-    args.writer = writer
 
     main()
