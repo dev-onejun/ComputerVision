@@ -8,9 +8,16 @@ from torchvision import transforms
 import glob
 from PIL import Image
 
+transform = transforms.Compose(
+    [
+        transforms.Resize((384, 384)),
+        transforms.ToTensor(),
+    ]
+)
+
 
 class RecaptchaDataset(Dataset):
-    def __init__(self, dataset_path, train_type):
+    def __init__(self, dataset_path, train_type, transform=transform):
         super(RecaptchaDataset, self).__init__()
 
         labels = []
@@ -58,12 +65,7 @@ class RecaptchaDataset(Dataset):
         self.idx_to_label = {i: j for i, j in enumerate(labels)}
         self.label_to_idx = {value: key for key, value in self.idx_to_label.items()}
 
-        self.transform = transforms.Compose(
-            [
-                transforms.Resize((384, 384)),
-                transforms.ToTensor(),
-            ]
-        )
+        self.transform = transform
 
         assert train_type in (
             "train",
