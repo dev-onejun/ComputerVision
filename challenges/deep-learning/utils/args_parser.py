@@ -33,7 +33,13 @@ def get_train_parsed_arguments():
         "--dataset-path",
         type=str,
         default="./datasets/recaptcha-dataset",
-        help="The path of the dataset (default: ./datasets/recaptcha-dataset)",
+        help="The path of the train dataset (default: ./datasets/recaptcha-dataset)",
+    )
+    parser.add_argument(
+        "--test-dataset-path",
+        type=str,
+        default="./datasets/test-dataset",
+        help="The path to the test dataset (default: ./datasets/test-dataset)",
     )
     parser.add_argument(
         "--batch-size",

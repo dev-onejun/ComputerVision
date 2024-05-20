@@ -4,7 +4,8 @@ from utils.args_parser import get_train_parsed_arguments
 from models import EfficientNet, ResNet
 from models import EfficientNet_V2_L_Weights, ResNet152_Weights
 
-from datasets import RecaptchaDataset as Dataset
+from datasets import RecaptchaDataset as TrainDataset
+from datasets import TestDataset
 from torch.utils import data
 import torch
 
@@ -72,8 +73,8 @@ def main():
     if torch.cuda.device_count() > 1:
         model = torch.nn.DataParallel(model)
 
-    train_dataset = Dataset(args.dataset_path, "train", transform=transform)
-    validate_dataset = Dataset(args.dataset_path, "validate", transform=transform)
+    train_dataset = TrainDataset(args.dataset_path, "all", transform=transform)
+    validate_dataset = TestDataset(args.test_dataset_path, transform=transform)
 
     train_loader = data.DataLoader(
         train_dataset,

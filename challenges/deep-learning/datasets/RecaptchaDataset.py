@@ -122,6 +122,40 @@ class RecaptchaDataset(Dataset):
         return image, label
 
 
+class TestDataset(Dataset):
+    def __init__(self, dataset_path, transform=transform):
+        super(TestDataset, self).__init__()
+
+        labels, image_paths = [], []
+        for dataset in glob.glob(dataset_path + "/*"):
+            label = dataset.split("/")[-1]
+            labels.append(label)
+
+            image_paths_for_label = glob.glob(dataset + "/*")
+            image_paths.append(image_paths_for_label)
+
+        self.image_paths = list(flatten(image_paths))
+        self.idx_to_label = {i: j for i, j in enumerate(labels)}
+        self.label_to_idx = {value: key for key, value in self.idx_to_label.items()}
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        image = Image.open(self.image_paths[idx])
+        image = image.convert("RGB")
+        image = self.transform(image)
+
+        label = self.image_paths[idx].split("/")[-2]
+        label = self.label_to_idx[label]
+
+        return image, label
+
+
 if __name__ == "__main__":
-    dataset = RecaptchaDataset("./recaptcha-dataset", "all")
-    print(len(dataset))
+    train_dataset = RecaptchaDataset("./augmented-recaptcha-dataset", "all")
+    print(len(train_dataset))
+
+    test_dataset = TestDataset("./test-dataset")
+    print(len(test_dataset))
