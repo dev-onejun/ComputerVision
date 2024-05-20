@@ -1,6 +1,11 @@
 # Challenges
 
+**UPDATE** Transformers like ViT and CLIP are prohibited !!!
+
 ## Problems
+
+1. Classification
+2. Retrieval
 
 ### Recaptcha Dataset
 
@@ -18,3 +23,7 @@
 <!--EXCLUDED: 10. Other, 1469 files -->
 9. Palm, 932 files
 10. Traffic Light, 811 files
+
+### Appendix
+
+* [image_matching_system.iypnb](./image_matching_system.ipynb) is the given file.
