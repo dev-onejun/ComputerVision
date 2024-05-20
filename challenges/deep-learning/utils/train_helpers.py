@@ -67,3 +67,49 @@ def evaluate(processor, model, dataloader, loss_fn, device):
     accuracy = correct / (len(dataloader) * dataloader.batch_size) * 100
 
     return epoch_loss, accuracy
+
+
+def fit_cnn(model, dataloader, optimizer, loss_fn, device):
+    model.train()
+
+    epoch_loss = 0.0
+    correct = 0
+    for images, targets in process_large_dataset(dataloader):
+        images, targets = images.to(device), targets.to(device)
+
+        outputs = model(images)
+        loss = loss_fn(outputs, targets)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        epoch_loss += loss.item()
+        predicts = torch.argmax(outputs, dim=1)
+        correct += (targets == predicts).sum().float()
+
+    epoch_loss = epoch_loss / len(dataloader)
+    accuracy = correct / (len(dataloader) * dataloader.batch_size) * 100
+
+    return epoch_loss, accuracy
+
+
+def evaluate_cnn(model, dataloader, optimizer, loss_fn, device):
+    model.eval()
+
+    epoch_loss, correct = 0.0, 0
+    with torch.no_grad():
+        for images, targets in process_large_dataset(dataloader):
+            images, targets = images.to(device), targets.to(device)
+
+            outputs = model(images)
+            loss = loss_fn(outputs, targets)
+
+            epoch_loss += loss.item()
+            predicts = torch.argmax(outputs, dim=1)
+            correct += (targets == predicts).sum().float()
+
+    epoch_loss = epoch_loss / len(dataloader)
+    accuracy = correct / (len(dataloader) * dataloader.batch_size) * 100
+
+    return epoch_loss, accuracy

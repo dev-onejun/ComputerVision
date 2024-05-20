@@ -69,4 +69,11 @@ def get_train_parsed_arguments():
         default="./saved_models/target_model.pt",
     )
 
+    parser.add_argument(
+        "--model-type",
+        type=str,
+        default="efficientnet",
+        help="model type (efficientnet | resnet)",
+    )
+
     return parser.parse_args()
