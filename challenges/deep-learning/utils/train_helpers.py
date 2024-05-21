@@ -38,7 +38,7 @@ def fit(processor, model, dataloader, optimizer, loss_fn, device):
         """
 
     epoch_loss = epoch_loss / len(dataloader)
-    accuracy = correct / (len(dataloader) * dataloader.batch_size) * 100
+    accuracy = correct / len(dataloader.dataset) * 100
 
     return epoch_loss, accuracy
 
@@ -64,7 +64,7 @@ def evaluate(processor, model, dataloader, loss_fn, device):
             correct += (targets == predicts).sum().float()
 
     epoch_loss = epoch_loss / len(dataloader)
-    accuracy = correct / (len(dataloader) * dataloader.batch_size) * 100
+    accuracy = correct / len(dataloader.dataset) * 100
 
     return epoch_loss, accuracy
 
