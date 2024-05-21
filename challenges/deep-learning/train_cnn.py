@@ -32,7 +32,6 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
         validate_loss, validate_accuracy = evaluate_cnn(
             model,
             validate_loader,
-            optimizer,
             loss_fn,
             device,
         )
