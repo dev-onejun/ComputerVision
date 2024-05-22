@@ -27,7 +27,7 @@ def fit(processor, model, dataloader, optimizer, loss_fn, device):
         loss.backward()
         optimizer.step()
 
-        epoch_loss += loss.item()
+        epoch_loss += loss.item() * images.size(0)
         predicts = torch.argmax(outputs, dim=1)
         correct += (targets == predicts).sum().float()
 
@@ -37,7 +37,7 @@ def fit(processor, model, dataloader, optimizer, loss_fn, device):
         print(f"Step Accuracy {batch_accuracy:.4f}")
         """
 
-    epoch_loss = epoch_loss / len(dataloader)
+    epoch_loss = epoch_loss / len(dataloader.dataset)
     accuracy = correct / len(dataloader.dataset) * 100
 
     return epoch_loss, accuracy
@@ -59,11 +59,11 @@ def evaluate(processor, model, dataloader, loss_fn, device):
 
             loss = loss_fn(outputs, targets)
 
-            epoch_loss += loss.item()
+            epoch_loss += loss.item() * images.size(0)
             predicts = torch.argmax(outputs, dim=1)
             correct += (targets == predicts).sum().float()
 
-    epoch_loss = epoch_loss / len(dataloader)
+    epoch_loss = epoch_loss / len(dataloader.dataset)
     accuracy = correct / len(dataloader.dataset) * 100
 
     return epoch_loss, accuracy
@@ -84,11 +84,11 @@ def fit_cnn(model, dataloader, optimizer, loss_fn, device):
         loss.backward()
         optimizer.step()
 
-        epoch_loss += loss.item()
+        epoch_loss += loss.item() * images.size(0)
         predicts = torch.argmax(outputs, dim=1)
         correct += (targets == predicts).sum().float()
 
-    epoch_loss = epoch_loss / len(dataloader)
+    epoch_loss = epoch_loss / len(dataloader.dataset)
     accuracy = correct / len(dataloader.dataset) * 100
 
     return epoch_loss, accuracy
@@ -105,11 +105,13 @@ def evaluate_cnn(model, dataloader, loss_fn, device):
             outputs = model(images)
             loss = loss_fn(outputs, targets)
 
-            epoch_loss += loss.item()
+            epoch_loss += loss.item() * images.size(
+                0
+            )  # loss.item() = batch average loss / images.size(0) = batch size (can differ in the last)
             predicts = torch.argmax(outputs, dim=1)
             correct += (targets == predicts).sum().float()
 
-    epoch_loss = epoch_loss / len(dataloader)
+    epoch_loss = epoch_loss / len(dataloader.dataset)
     accuracy = correct / len(dataloader.dataset) * 100
 
     return epoch_loss, accuracy

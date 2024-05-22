@@ -2,7 +2,7 @@ import os
 from utils.args_parser import get_train_parsed_arguments
 
 from models import EfficientNet, ResNet
-from models import EfficientNet_V2_L_Weights, ResNet152_Weights
+from models import EfficientNet_V2_L_Weights, ResNet152_Weights, ResNet50_Weights
 
 from datasets import RecaptchaDataset as TrainDataset
 from datasets import TestDataset
@@ -13,6 +13,7 @@ from utils.train_helpers import fit_cnn, evaluate_cnn
 
 from torch.utils.tensorboard.writer import SummaryWriter
 from datetime import datetime
+from copy import deepcopy
 
 
 def train(train_loader, validate_loader, model, n_epochs, lr):
@@ -21,6 +22,7 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_fn = torch.nn.CrossEntropyLoss()
 
+    best_accuracy, best_model_weights = 0.0, None
     for epoch in range(1, n_epochs + 1):
         train_loss, train_accuracy = fit_cnn(
             model,
@@ -37,7 +39,7 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
         )
 
         print(
-            f"Epoch {epoch}\t|\tTrain Loss {train_loss:.4f}\tTrain Accuracy {train_accuracy:.4f}\tValidate Loss {validate_loss:.4f}\tValidate Accuracy {validate_accuracy:.4f}"
+            f"Epoch {epoch}\t| Train Loss {train_loss:.4f}\tTrain Accuracy {train_accuracy:.4f}\tValidate Loss {validate_loss:.4f}\tValidate Accuracy {validate_accuracy:.4f}"
         )
 
         writer.add_scalar("loss/train", train_loss, epoch)
@@ -53,6 +55,10 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
                 ),
             )
 
+        if validate_accuracy > best_accuracy:
+            best_accuracy = validate_accuracy
+            best_model_weights = deepcopy(model.state_dict())
+
     writer.flush()
 
     torch.save(
@@ -60,12 +66,19 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
         os.path.join(saved_model_dir, "final_{}.pt".format(datetime.now())),
     )
 
+    print(f"\n\nBest Accuracy: {best_accuracy}")
+    torch.save(
+        best_model_weights,
+        os.path.join(saved_model_dir, "best_{}.pt".format(datetime.now())),
+    )
+
 
 def main():
     model, transform = (
         (EfficientNet(), EfficientNet_V2_L_Weights.IMAGENET1K_V1.transforms())
         if args.model_type == "efficientnet"
-        else (ResNet(), ResNet152_Weights.IMAGENET1K_V2.transforms())
+        # else (ResNet(), ResNet152_Weights.IMAGENET1K_V2.transforms())
+        else (ResNet(), ResNet50_Weights.IMAGENET1K_V2.transforms())
     )
     model.to(device)
 
