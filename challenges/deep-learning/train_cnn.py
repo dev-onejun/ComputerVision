@@ -22,7 +22,7 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     loss_fn = torch.nn.CrossEntropyLoss()
 
-    best_accuracy, best_model_weights = 0.0, None
+    best_epoch, best_accuracy, best_model_weights = 0, 0.0, None
     for epoch in range(1, n_epochs + 1):
         train_loss, train_accuracy = fit_cnn(
             model,
@@ -56,7 +56,7 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
             )
 
         if validate_accuracy > best_accuracy:
-            best_accuracy = validate_accuracy
+            best_epoch, best_accuracy = epoch, validate_accuracy
             best_model_weights = deepcopy(model.state_dict())
 
     writer.flush()
@@ -69,7 +69,9 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
     print(f"\n\nBest Accuracy: {best_accuracy}")
     torch.save(
         best_model_weights,
-        os.path.join(saved_model_dir, "best_{}.pt".format(datetime.now())),
+        os.path.join(
+            saved_model_dir, "best_{}_{}.pt".format(best_epoch, datetime.now())
+        ),
     )
 
 
