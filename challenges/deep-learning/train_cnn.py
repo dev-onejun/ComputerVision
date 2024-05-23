@@ -76,11 +76,15 @@ def train(train_loader, validate_loader, model, n_epochs, lr):
 
 
 def main():
+    assert args.model_type in ("efficientnet", "resnet152", "resnet50")
     model, transform = (
         (EfficientNet(), EfficientNet_V2_L_Weights.IMAGENET1K_V1.transforms())
         if args.model_type == "efficientnet"
-        # else (ResNet(), ResNet152_Weights.IMAGENET1K_V2.transforms())
-        else (ResNet(), ResNet50_Weights.IMAGENET1K_V2.transforms())
+        else (
+            (ResNet(), ResNet152_Weights.IMAGENET1K_V2.transforms())
+            if args.model_type == "resnet152"
+            else (ResNet(), ResNet50_Weights.IMAGENET1K_V2.transforms())
+        )
     )
     model.to(device)
 
