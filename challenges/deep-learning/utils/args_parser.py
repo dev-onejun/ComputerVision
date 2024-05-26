@@ -33,7 +33,13 @@ def get_train_parsed_arguments():
         "--dataset-path",
         type=str,
         default="./datasets/recaptcha-dataset",
-        help="The path of the dataset (default: ./datasets/recaptcha-dataset)",
+        help="The path of the train dataset (default: ./datasets/recaptcha-dataset)",
+    )
+    parser.add_argument(
+        "--test-dataset-path",
+        type=str,
+        default="./datasets/test-dataset",
+        help="The path to the test dataset (default: ./datasets/test-dataset)",
     )
     parser.add_argument(
         "--batch-size",
@@ -67,6 +73,13 @@ def get_train_parsed_arguments():
         "--model-path",
         type=str,
         default="./saved_models/target_model.pt",
+    )
+
+    parser.add_argument(
+        "--model-type",
+        type=str,
+        default="efficientnet",
+        help="model type (efficientnet | resnet152 | resnet50)",
     )
 
     return parser.parse_args()

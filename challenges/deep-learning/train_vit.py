@@ -86,6 +86,7 @@ def main():
     if args.train:
         train_dataset = Dataset(args.dataset_path, "train")
         validate_dataset = Dataset(args.dataset_path, "validate")
+        # train_dataset = Dataset(args.dataset_path, 'train', processor)
 
         train_loader = data.DataLoader(
             train_dataset,
