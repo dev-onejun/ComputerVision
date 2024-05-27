@@ -9,12 +9,26 @@ from torchvision.models import (
 from torch import nn
 
 
-class ResNet(nn.Module):
+class ResNet50(nn.Module):
     def __init__(self):
-        super(ResNet, self).__init__()
+        super(ResNet50, self).__init__()
 
-        # self.model = resnet152(weights=ResNet152_Weights.IMAGENET1K_V2)
         self.model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
+        self.model.fc = nn.Sequential(
+            nn.Linear(2048, 2048),
+            nn.ReLU(),
+            nn.Linear(2048, 10),
+        )
+
+    def forward(self, x):
+        return self.model(x)
+
+
+class ResNet152(nn.Module):
+    def __init__(self):
+        super(ResNet152, self).__init__()
+
+        self.model = resnet152(weights=ResNet152_Weights.IMAGENET1K_V2)
         self.model.fc = nn.Sequential(
             nn.Linear(2048, 2048),
             nn.ReLU(),
@@ -61,5 +75,5 @@ class MixNet(nn.Module):
 
 
 if __name__ == "__main__":
-    model = MixNet()
+    model = ResNet152()
     print(model)
