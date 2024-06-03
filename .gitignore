@@ -1,5 +1,7 @@
 venv/
 __pycache__/
 .ipynb_checkpoints/
+
 saved_models/
 *-dataset
+query/
