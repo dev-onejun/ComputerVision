@@ -105,9 +105,8 @@ def evaluate_cnn(model, dataloader, loss_fn, device):
             outputs = model(images)
             loss = loss_fn(outputs, targets)
 
-            epoch_loss += loss.item() * images.size(
-                0
-            )  # loss.item() = batch average loss / images.size(0) = batch size (can differ in the last)
+            # loss.item() = batch average loss && images.size(0) = batch size (can differ in the last)
+            epoch_loss += loss.item() * images.size(0)
             predicts = torch.argmax(outputs, dim=1)
             correct += (targets == predicts).sum().float()
 
