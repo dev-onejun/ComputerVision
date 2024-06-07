@@ -74,7 +74,7 @@ class HiddenModels:
 
         _efficientnetv2 = EfficientNet()
         _efficientnetv2.load_state_dict(torch.load(kwargs["efficientnetv2"]))
-        _efficientnetv2.classifier = nn.Identity()
+        _efficientnetv2.model.classifier = nn.Identity()
         for name, param in _efficientnetv2.named_parameters():
             param.requires_grad = False
 
