@@ -1,16 +1,16 @@
+import glob
+from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-import glob
-from PIL import Image
 from torchvision.models import (
     EfficientNet_V2_L_Weights,
     ResNet152_Weights,
     ResNet50_Weights,
 )
 
-from torch import nn
 import torch
+from torch import nn
 from CNNs import ResNet50, ResNet152, EfficientNet
 
 
@@ -62,7 +62,7 @@ class VotingEnsemble(nn.Module):
             self.resnet50(resnet50_input),
             self.resnet152(resnet152_input),
             self.efficientnetv2(efficientnetv2_input),
-        ]
+        ]  # (3, batch_size, num_classes)
         outputs = [torch.argmax(output, dim=1) for output in outputs]
 
         temp = outputs.copy()
@@ -131,8 +131,8 @@ if __name__ == "__main__":
         )
 
     model = VotingEnsemble(
-        resnet50="./saved_models/resnet50_acc61.pt",
-        resnet152="./saved_models/resnet152_acc60.pt",
+        resnet50="./saved_models/resnet50.pt",
+        resnet152="./saved_models/resnet152.pt",
         efficientnetv2="./saved_models/efficientnetv2.pt",
     )
     model.to(device)
@@ -144,11 +144,7 @@ if __name__ == "__main__":
             query = batch[3]
             batch = batch[:3]
             batch = tuple(t.to(device) for t in batch)
-            (resnet50_input, resnet152_input, efficientnetv2_input) = (
-                batch[0],
-                batch[1],
-                batch[2],
-            )
+            resnet50_input, resnet152_input, efficientnetv2_input = batch
 
             outputs = model(resnet50_input, resnet152_input, efficientnetv2_input)
 
