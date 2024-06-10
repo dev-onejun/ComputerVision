@@ -5,7 +5,21 @@ from numpy._typing import NDArray
 
 from skimage.feature import local_binary_pattern, graycomatrix, graycoprops
 
-X_weights, X_bias = np.array([1, 1, 1, 1, 1, 1, 1, 1]), 0
+X_weights, X_bias = (
+    np.array(
+        [
+            5.1377e-01,
+            8.0769e-01,
+            -3.7637e-01,
+            6.6119e-01,
+            2.1999e-01,
+            -1.5192e-01,
+            -6.1256e-02,
+            -1.6483e-04,
+        ]
+    ),
+    -0.1139,
+)
 
 
 def histogram_normalization(histogram: NDArray):
