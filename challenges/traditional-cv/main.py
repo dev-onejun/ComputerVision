@@ -412,11 +412,17 @@ def get_feature_weights(dataset):
         )
         p.start()
         procs.append(p)
+
+    datasets = []
+    while not result.empty():
+        dataset = result.get()
+        datasets.append(dataset)
+
+    pdb.set_trace()
+
     for p in procs:
         p.join()
-    dataset = result.get()
-    dataset = TensorDataset(torch.Tensor(dataset))
-    pdb.set_trace()
+
 
     result = Queue()
     num_workers, procs = 8, []
