@@ -156,6 +156,7 @@ class TestDataset(Dataset):
 if __name__ == "__main__":
     train_dataset = RecaptchaDataset("./augmented-recaptcha-dataset", "all")
     print(len(train_dataset))
+    print(train_dataset.idx_to_label)
 
     test_dataset = TestDataset("./test-dataset")
     print(len(test_dataset))

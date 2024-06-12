@@ -1,7 +1,7 @@
 import os
 from utils.args_parser import get_train_parsed_arguments
 
-from models import EfficientNet, ResNet
+from models import EfficientNet, ResNet50, ResNet152
 from models import EfficientNet_V2_L_Weights, ResNet152_Weights, ResNet50_Weights
 
 from datasets import RecaptchaDataset as TrainDataset
@@ -81,9 +81,9 @@ def main():
         (EfficientNet(), EfficientNet_V2_L_Weights.IMAGENET1K_V1.transforms())
         if args.model_type == "efficientnet"
         else (
-            (ResNet(), ResNet152_Weights.IMAGENET1K_V2.transforms())
+            (ResNet152(), ResNet152_Weights.IMAGENET1K_V2.transforms())
             if args.model_type == "resnet152"
-            else (ResNet(), ResNet50_Weights.IMAGENET1K_V2.transforms())
+            else (ResNet50(), ResNet50_Weights.IMAGENET1K_V2.transforms())
         )
     )
     model.to(device)
