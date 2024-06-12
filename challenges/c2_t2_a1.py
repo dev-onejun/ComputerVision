@@ -81,6 +81,13 @@ class DB(Dataset):
         self.db = []
         labels = []
         for model_type in glob.glob("./DB/*"):
+            if model_type.split("/")[-1] not in (
+                "efficientnetv2",
+                "resnet152",
+                "resnet50",
+            ):
+                continue
+
             db_per_model = []
             for tensor_file in glob.glob(model_type + "/*"):
                 data = torch.load(tensor_file)
@@ -175,9 +182,13 @@ if __name__ == "__main__":
             query_top10 = []
             for query_hidden_feature in hidden_feature:
                 query_hidden_feature.unsqueeze(0)
+                """ euclidian distance """
                 distance = torch.norm(db - query_hidden_feature, dim=1, p=2)
-                knn = distance.topk(10, largest=True)
+                knn = distance.topk(10, largest=False)
                 # print('kNN dist: {}, index: {}'.format(knn.values, knn.indices))
+
+                """ cosine similarity """
+                # torch.cosine_similarity(db, query_hidden_feature, dim=)
 
                 query_top10.append(knn.indices.cpu())
             # query_top10: (100, 10)

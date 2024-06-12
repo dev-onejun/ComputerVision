@@ -76,7 +76,7 @@ class VotingEnsemble(nn.Module):
             # Refers to the frequency of the classes is same
             if mode_index == 0:
                 # Follows the highest accuracy model while training
-                mode_outputs[i] = temp[0]
+                mode_outputs[i] = temp[0][i]
 
         return mode_outputs
 
