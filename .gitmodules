@@ -2,3 +2,6 @@
 	path = challenges/recaptcha-dataset
 	url = git@github.com:folfcoder/recaptcha-dataset.git
 	ignore = untracked
+[submodule "Image-Challenge"]
+	path = Image-Challenge
+	url = git@github.com:dev-onejun/Image-Challenge.git
